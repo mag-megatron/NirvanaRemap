@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:NirvanaMAUI.ViewModels"
+             xmlns:converters="clr-namespace:NirvanaMAUI.Converters"
+             x:Class="NirvanaMAUI.MainPage"
+             Title=""
+             BackgroundColor="#1a1a1a">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:SelectedProfileColorConverter x:Key="SelectedProfileColorConverter" />
+            <converters:ProfileActionTextConverter x:Key="ProfileActionTextConverter" />
+            <converters:GamepadConnectionTextConverter x:Key="GamepadConnectionTextConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="200,*, 180, 180">
+        <!-- Coluna 0: Aba de Perfis -->
+        <VerticalStackLayout BackgroundColor="#111111"
+                     Padding="15"
+                     Spacing="10"
+                     Grid.Column="0">
+
+            <Label Text="Profiles" FontSize="16" FontAttributes="Bold" TextColor="White" />
+
+            <CollectionView x:Name="ProfileList"
+                    ItemsSource="{Binding Profiles}"
+                    SelectionMode="Single"
+                    SelectedItem="{Binding SelectedProfile, Mode=TwoWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Stroke="#3a3a3a"
+                        Background="{Binding IsSelected, Converter={StaticResource SelectedProfileColorConverter}}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="10"
+                        Margin="0,5">
+                            <Grid ColumnDefinitions="*, Auto"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Fill">
+
+                                <Label Grid.Column="0"
+                               Text="{Binding Name}"
+                               TextColor="White"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"
+                               FontSize="14" />
+
+                                <Button Grid.Column="1"
+                                Text="{Binding ., Converter={StaticResource ProfileActionTextConverter}, ConverterParameter={x:Reference ProfileList}}"
+                                BackgroundColor="Transparent"
+                                TextColor="White"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                Padding="0"
+                                Command="{Binding BindingContext.ProfileActionCommand, Source={x:Reference ProfileList}}"
+                                CommandParameter="{Binding}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- ✅ Botão Resetar Perfis (fora da CollectionView) -->
+            <Button Text="Resetar Perfis"
+            BackgroundColor="DarkRed"
+            TextColor="White"
+            FontAttributes="Bold"
+            Clicked="OnResetProfilesClicked"
+            Margin="0,15,0,0"
+            HorizontalOptions="Center"
+            WidthRequest="150"/>
+
+        </VerticalStackLayout>
+
+
+        <!-- Coluna 1: Mapeamento -->
+        <ScrollView Grid.Column="1">
+            <VerticalStackLayout Padding="20" Spacing="25" HorizontalOptions="Center" VerticalOptions="Center">
+
+                <!-- Reinsere todos os grupos de botões -->
+
+                <!-- Triggers -->
+                <Label Text="Triggers (LT/RT)" TextColor="White" FontAttributes="Bold" FontSize="14" />
+                <Border Background="#1e1e1e" Stroke="#3a3a3a" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="15" WidthRequest="500">
+                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                        <VerticalStackLayout>
+                            <Label Text="LT" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="LTButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="RT" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="RTButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- Back Buttons -->
+                <Label Text="Back Buttons (LB/RB)" TextColor="White" FontAttributes="Bold" FontSize="14" />
+                <Border Background="#1e1e1e" Stroke="#3a3a3a" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="15" WidthRequest="500">
+                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                        <VerticalStackLayout>
+                            <Label Text="LB" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="LBButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="RB" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="RBButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- D-Pad -->
+                <Label Text="D-Pad" TextColor="White" FontAttributes="Bold" FontSize="14" />
+                <Border Background="#1e1e1e" Stroke="#3a3a3a" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="15" WidthRequest="500">
+                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                        <VerticalStackLayout>
+                            <Label Text="D.Left" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="DLeftButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="D.Up" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="DUpButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="D.Down" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="DDownButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="D.Right" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="DRightButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- Stick Clicks -->
+                <Label Text="Stick Clicks (L3/R3)" TextColor="White" FontAttributes="Bold" FontSize="14" />
+                <Border Background="#1e1e1e" Stroke="#3a3a3a" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="15" WidthRequest="500">
+                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                        <VerticalStackLayout>
+                            <Label Text="L3" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="L3Button" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="R3" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="R3Button" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- ABXY -->
+                <Label Text="Front Buttons (ABXY)" TextColor="White" FontAttributes="Bold" FontSize="14" />
+                <Border Background="#1e1e1e" Stroke="#3a3a3a" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="15" WidthRequest="500">
+                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                        <VerticalStackLayout>
+                            <Label Text="A" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="AButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="B" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="BButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="X" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="XButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="Y" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="YButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <!-- View / Menu -->
+                <Label Text="Central Buttons (View/Menu)" TextColor="White" FontAttributes="Bold" FontSize="14" />
+                <Border Background="#1e1e1e" Stroke="#3a3a3a" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="15" WidthRequest="500">
+                    <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                        <VerticalStackLayout>
+                            <Label Text="View" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="ViewButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout>
+                            <Label Text="Menu" TextColor="White" FontSize="14" HorizontalOptions="Center" />
+                            <Button x:Name="MenuButton" Text="Selecionar" WidthRequest="80" Clicked="OnMappingButtonClicked" BackgroundColor="Transparent" TextColor="White" BorderColor="White" BorderWidth="1" CornerRadius="6" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Button Text="Salvar Alterações" BackgroundColor="#3a3a3a" TextColor="White" FontAttributes="Bold" Clicked="OnSaveProfileClicked" Margin="0,30,0,20" HorizontalOptions="Center" WidthRequest="80" HeightRequest="80" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!--  PAINEL DE STATUS -->
+        <VerticalStackLayout Grid.Row="1" Grid.Column="2"
+                        BackgroundColor="#222222" Padding="15" Spacing="10">
+            <Label Text="Estado dos Inputs"
+             FontSize="16" FontAttributes="Bold"
+             TextColor="White" HorizontalOptions="Center" />
+            <Label Text="{Binding GamepadConnected, Converter={StaticResource GamepadConnectionTextConverter}}"
+                   FontSize="14" TextColor="White" HorizontalOptions="Center" />
+
+            <CollectionView ItemsSource="{Binding CurrentInputs}"
+                      SelectionMode="None"
+                      BackgroundColor="Transparent">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,Auto" Padding="4">
+                            <Label Text="{Binding Name}"
+                                     TextColor="White" FontSize="14"/>
+                            <Label Grid.Column="1"
+                                     Text="{Binding Value, StringFormat='{0:F2}'}"
+                                     TextColor="LightGreen"
+                                     FontSize="14"
+                                     HorizontalOptions="End"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Row="1" Grid.Column="3"
+                        BackgroundColor="#222222" Padding="15" Spacing="10">
+            <Label Text="Saída ViGEm"
+             FontSize="16" FontAttributes="Bold"
+             TextColor="White" HorizontalOptions="Center" />
+            <Label Text="Gamepad Virtual"
+               FontSize="14" 
+               TextColor="White" HorizontalOptions="Center" />
+            <CollectionView ItemsSource="{Binding CurrentOutputs}"
+                      SelectionMode="None"
+                      BackgroundColor="Transparent">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,Auto" Padding="4">
+                            <Label Text="{Binding Name}"
+                                     TextColor="White" FontSize="14"/>
+                            <Label Grid.Column="1"
+                                     Text="{Binding Value, StringFormat='{0:F2}'}"
+                                     TextColor="LightGreen"
+                                     FontSize="14"
+                                     HorizontalOptions="End"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
